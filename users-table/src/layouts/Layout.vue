@@ -1,15 +1,8 @@
 <template>
     <Header />
-
-    <HomeSidebar />
-
-    <Main>
-        <slot></slot>
-    </Main>
+    <slot></slot>
 </template>
 
 <script setup>
-import Main from '../components/Main.vue'
-import Header from '../components/Header.vue'
-import HomeSidebar from '../components/HomeSidebar.vue'
+    import Header from '../components/Header.vue'
 </script>
