@@ -1,6 +1,9 @@
 <template>
-    <main>
-      <h1>Hello World!</h1>
-      <p>Description</p>
-    </main>
+    <Layout>
+        Hello, world!
+    </Layout>
 </template>
+
+<script setup>
+import Layout from '../layouts/Layout.vue'
+</script>
