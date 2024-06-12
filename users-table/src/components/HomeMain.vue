@@ -4,7 +4,9 @@
             <div>
                 <div class="d-flex justify-space-between align-center mb-6">
                     <div class="d-flex align-center">
-                        <h1 class="text-h6 mr-4">Обработанные</h1>  
+                        <h1 class="text-h6 mr-4">
+                            {{ this.title }}
+                        </h1>  
                         <v-btn 
                             @click="this.getUsers"
                             variant="flat"
@@ -17,6 +19,7 @@
                 <v-container class="table-grid-7 ">
                     <div class="mb-5">
                         <v-row class="mb-4">
+                            <v-col v-if="!this.shownUsers" class="text-body-1 font-weight-bold">Стутас</v-col>
                             <v-col
                                 v-for="attribute of this.attributes"
                                 :key="attribute"
@@ -34,6 +37,10 @@
                         class="mb-5"
                     >
                         <v-row class="mb-6">
+                            <v-col v-if="!this.shownUsers" class="text-body-2">
+                                <v-icon v-if="user.status" icon="mdi-cloud-check-variant" color="primary" />
+                                <v-icon v-else icon="mdi-cloud-alert" color="error"/>
+                            </v-col >
                             <v-col class="text-body-2">
                                 {{user.firstName}}
                             </v-col >
@@ -120,17 +127,27 @@
             },
             ...mapActions(useUsersStore, ['fetchUsers']),
             getUsers() {
-                this.fetchUsers(this.page, this.limit)
+                this.fetchUsers(this.shownUsers, this.page, this.limit)
             }
         },
         computed: {
-            ...mapState(useUsersStore, {users: 'users'})
+            ...mapState(useUsersStore, ['users', 'shownUsers']),
+            title() {
+                switch(this.shownUsers) {
+                    case '': return 'Все'
+                    case 'status=true': return 'Обработанные'
+                    case 'status=false': return 'Не обработанные'
+                }
+            }
         },
         watch: {
             page() {
                 this.getUsers()
             },
             limit() {
+                this.getUsers()
+            },
+            shownUsers() {
                 this.getUsers()
             }
         },

@@ -4,15 +4,25 @@ export const useUsersStore = defineStore('counter', {
     state: () => {
         return {
             users: [],
+            shownUsers: 'status=true',
         }
     },
     getters : {
         amountOfUsers: (users) => users.length
     },
     actions: {
-        async fetchUsers(page, limit) {
+        showAllUsers() {
+            this.shownUsers = ''
+        },
+        showValidUsers() {
+            this.shownUsers = 'status=true'
+        },
+        showNotValidUsers() {
+            this.shownUsers = 'status=false'
+        },
+        async fetchUsers(shownUsers, page, limit) {
             try {
-                const result = await fetch(`https://retoolapi.dev/D6xLg4/data?_page=${page}&_limit=${limit}`)
+                const result = await fetch(`https://retoolapi.dev/D6xLg4/data?${shownUsers}&_page=${page}&_limit=${limit}`)
                 const data = await result.json()
 
                 this.users = data

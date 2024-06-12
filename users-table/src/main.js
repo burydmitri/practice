@@ -15,12 +15,12 @@ const vuetify = createVuetify({
     components,
     directives,
     theme: {
-
         themes: {
           light: {
             dark: false,
             colors: {
               primary: '#0F4C82',
+              error: '#DF2B2B'
             }
           },
         },
