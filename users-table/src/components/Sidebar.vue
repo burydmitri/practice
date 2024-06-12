@@ -1,7 +1,7 @@
 <template>
     <v-navigation-drawer 
         :width="300"
-        elevation="2"
+        elevation="4"
         class="px-7 py-8" 
     >
     <v-list>
