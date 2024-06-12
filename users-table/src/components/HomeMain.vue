@@ -5,7 +5,11 @@
                 <div class="d-flex justify-space-between align-center mb-6">
                     <div class="d-flex align-center">
                         <h1 class="text-h6 mr-4">Обработанные</h1>  
-                        <v-btn variant="flat" icon="mdi-reload" />
+                        <v-btn 
+                            @click="this.getUsers"
+                            variant="flat"
+                            icon="mdi-reload"
+                        />
                     </div>
                     <v-btn class="font-weight-light text-subtitle-2 px-16" color="primary" variant="flat" append-icon="mdi-menu-down">Действия</v-btn>
                 </div>
@@ -14,7 +18,7 @@
                     <div class="mb-5">
                         <v-row class="mb-4">
                             <v-col
-                                v-for="attribute of attributes"
+                                v-for="attribute of this.attributes"
                                 :key="attribute"
                                 class="text-body-1 font-weight-bold"
                             >
@@ -23,18 +27,33 @@
                         </v-row>
                         <v-divider />
                     </div>
+                    
                     <div
-                        v-for="n in 3"
-                        :key="n"
+                        v-for="user of this.users"
+                        :key="user.id"
                         class="mb-5"
                     >
                         <v-row class="mb-6">
-                            <v-col 
-                                v-for="ni in 7"
-                                :key="ni"
-                                class="text-body-2"
-                            >
-                                Lorem Ipsum
+                            <v-col class="text-body-2">
+                                {{user.firstName}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.lastName}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.company}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.jobTitle}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.phone}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.email}}
+                            </v-col >
+                            <v-col class="text-body-2">
+                                {{user.interests}}
                             </v-col >
                         </v-row>
                         <v-divider />
@@ -47,16 +66,26 @@
                 <div class="d-flex align-center justify-end pt-8">
                     <span class="text-body-2 montserrat mr-7">Количество элементов на странице:</span>
                     <select 
+                        v-model="this.limit"
                         class="text-body-2 montserrat pr-3 my-select"
                     >
                         <option 
-                            v-for="num in amountOfElements" 
+                            v-for="num in this.amountOfElements" 
                             :key="num"
                             :value="num"
+                            class="text-body-2 montserrat"
                         >{{ num }}</option>
                     </select>
-                    <v-icon class="" color="#A0A0A0" icon="mdi-menu-down"/>
-                    <v-pagination :length="10"></v-pagination>
+                    <v-icon class="mr-7" color="#A0A0A0" icon="mdi-menu-down"/>
+                    <v-btn @click="prevPage" variant="text">
+                        <v-icon color="#A0A0A0" icon="mdi-chevron-left"/>
+                    </v-btn>
+                    <span class="text-body-2 montserrat">
+                        {{ this.page }}
+                    </span>
+                    <v-btn @click="nextPage" variant="text">
+                        <v-icon color="#A0A0A0" icon="mdi-chevron-right"/>
+                    </v-btn>
                 </div>
             </div>
         </div>
@@ -65,9 +94,48 @@
 </template>
 
 
-<script setup>
+<script>
     import Main from './Main.vue'
 
-    const attributes = ['Имя', 'Фамилия', 'Компания', 'Специальность', 'Телефон', 'E-mail', 'Интересы']
-    const amountOfElements = [10, 7, 5, 3]
+    import { mapState, mapActions } from 'pinia'
+    import { useUsersStore } from '../stores/users-store'
+
+    export default {
+        components: {Main},
+        data() {
+            return {
+                page: 1,
+                limit: 3,
+                attributes: ['Имя', 'Фамилия', 'Компания', 'Специальность', 'Телефон', 'E-mail', 'Интересы'],
+                amountOfElements: [10, 7, 5, 3]
+            }
+        },
+        methods: {
+            nextPage() {
+                this.page++
+                
+            },
+            prevPage() {
+                this.page--
+            },
+            ...mapActions(useUsersStore, ['fetchUsers']),
+            getUsers() {
+                this.fetchUsers(this.page, this.limit)
+            }
+        },
+        computed: {
+            ...mapState(useUsersStore, {users: 'users'})
+        },
+        watch: {
+            page() {
+                this.getUsers()
+            },
+            limit() {
+                this.getUsers()
+            }
+        },
+        mounted() {
+            this.getUsers()
+        },
+    }
 </script>
