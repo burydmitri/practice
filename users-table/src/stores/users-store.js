@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
-//https://retoolapi.dev/D6xLg4/data
+import { UsersDataService } from "../helpers/data-service";
+
 export const useUsersStore = defineStore('counter', {
     state: () => {
         return {
             users: [],
-            shownUsers: 'status=true',
+            shownUsers: 'true',
         }
     },
     getters : {
@@ -15,21 +16,20 @@ export const useUsersStore = defineStore('counter', {
             this.shownUsers = ''
         },
         showValidUsers() {
-            this.shownUsers = 'status=true'
+            this.shownUsers = 'true'
         },
         showNotValidUsers() {
-            this.shownUsers = 'status=false'
+            this.shownUsers = 'false'
         },
-        async fetchUsers(shownUsers, page, limit) {
+        async fetchUsers(params) {
             try {
-                const result = await fetch(`https://retoolapi.dev/D6xLg4/data?${shownUsers}&_page=${page}&_limit=${limit}`)
-                const data = await result.json()
+                const response = await UsersDataService.getAll(params)
+                const { data } = response
 
                 this.users = data
-                console.log(data)
             }
-            catch (err) {
-                console.log(err)
+            catch (e) {
+                console.log(e)
             }
         }
     }
