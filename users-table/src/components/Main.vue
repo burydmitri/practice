@@ -1,5 +1,5 @@
 <template>
-    <v-main class="d-flex align-center justify-center my-3">
+    <v-main class="d-flex align-center justify-center my-3 position-relative">
         <v-card 
             elevation="5"
             class="w-100 h-100 mx-3 pa-8">

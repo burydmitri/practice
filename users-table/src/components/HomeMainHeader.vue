@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapActions } from 'pinia'
+import { useModalStore } from '../stores/modal-store'
 
 export default {
     props: {
@@ -34,7 +36,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions(useModalStore, ['toggleModalVisibility']),
         selectAction(str) {
+            this.toggleModalVisibility()
             this.selectedAction = str
         },
     }

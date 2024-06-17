@@ -1,5 +1,6 @@
 <template>
     <Main>
+        <ModalForm />
         <HomeMainHeader :title="this.title" />
         <HomeMainTable :users="this.users" :loading="this.loading" :shownUsers="this.shownUsers" />
     </Main>
@@ -8,14 +9,15 @@
 
 <script>
 import Main from './Main.vue'
-import HomeMainHeader from './HomeMainHeader.vue'
+import ModalForm from './ModalForm.vue'
 import HomeMainTable from './HomeMainTable.vue'
+import HomeMainHeader from './HomeMainHeader.vue'
 
 import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '../stores/users-store'
 
 export default {
-    components: { Main, HomeMainHeader, HomeMainTable },
+    components: { Main, HomeMainHeader, HomeMainTable, ModalForm },
     data() {
         return {
             loading: true,
