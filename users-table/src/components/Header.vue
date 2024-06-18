@@ -8,9 +8,20 @@
         </template>
 
         <template v-slot:append>
-            <v-btn icon="mdi-magnify" size="small" variant="flat" color="white" class="mr-7">
+            <v-btn @click="toggleModalVisibility" icon="mdi-magnify" size="small" variant="flat" color="white" class="mr-7">
                 <v-icon color="primary" />
             </v-btn>
         </template>
     </v-app-bar>
 </template>
+
+<script>
+import { mapActions } from 'pinia'
+import { useModalStore } from '../stores/modal-store'
+
+export default {
+    methods: {
+        ...mapActions(useModalStore, ['toggleModalVisibility']),
+    }
+}
+</script>

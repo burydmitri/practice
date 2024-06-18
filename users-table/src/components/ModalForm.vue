@@ -2,15 +2,8 @@
     <v-scroll-x-reverse-transition>
         <v-sheet v-if="isModalVisible" :width="434" color="white" :elevation="5" :rounded="true"
             class="position-fixed right-0 z-1 pa-8 d-flex flex-column justify-space-between modal-form">
-            <template v-if="isDelete">
-                <p class="mb-3 text-body-1">{{ `Вы точно хотите удалить пользователя ${fields.firstName.value}
-                    ${fields.lastName.value}?` }}
-                </p>
-                <div class="d-flex justify-end">
-                    <v-btn @click="clear" class="mr-5 modal-button text-subtitle-2" variant="outlined">Нет</v-btn>
-                    <v-btn @click="deleteUser" class="modal-button text-subtitle-2" color="primary">Да</v-btn>
-                </div>
-            </template>
+            <ModalDelete v-if="isDelete" :cancel="clear" :confirm="deleteUser" :firstName="fields.firstName.value"
+                :lastName="fields.lastName.value" />
             <template v-else>
                 <v-form>
                     <template v-for="field in fields" :key="field.title">
@@ -24,7 +17,10 @@
                     <v-btn @click="clear" class="mr-5 modal-button text-subtitle-2" variant="outlined">Очистить</v-btn>
                     <v-btn v-if="isAdd" @click="add" class="modal-button text-subt  itle-2"
                         color="primary">Применить</v-btn>
-                    <v-btn v-else @click="edit" class="modal-button text-subtitle-2" color="primary">Применить</v-btn>
+                    <v-btn v-else-if="isEdit" @click="edit" class="modal-button text-subtitle-2"
+                        color="primary">Применить</v-btn>
+                    <v-btn v-else @click="filter" class="modal-button text-subtitle-2"
+                        color="primary">Отфильтровать</v-btn>
                 </div>
             </template>
         </v-sheet>
@@ -35,10 +31,12 @@
 import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '../stores/users-store'
 import { useModalStore } from '../stores/modal-store'
-import { UsersDataService } from "../helpers/data-service";
+import { UsersDataService } from '../helpers/data-service'
+import ModalDelete from './ModalDelete.vue'
 
 
 export default {
+    components: { ModalDelete },
     data() {
         return {
             fields: {
@@ -63,18 +61,26 @@ export default {
             return this.selectedAction == 'Удалить'
         },
         newUser() {
-            return {
-                firstName: this.fields.firstName,
-                lastName: this.fields.lastName,
-                company: this.fields.company,
-                jobTitle: this.fields.jobTitle,
-                phone: this.fields.phone,
-                email: this.fields.email,
-                interests: this.fields.interests,
-                status: false
+            let params = { status: false }
+
+            for (let field in this.fields) {
+                params[field] = this.fields[field].value
             }
+
+            return params
         },
-        ...mapState(useUsersStore, ['users']),
+        usersGetParams() {
+            let params = {}
+
+            if (this.shownUsers) params.status = this.shownUsers
+
+            for (let field in this.fields) {
+                if (this.fields[field].value) params[field] = this.fields[field].value
+            }
+
+            return params
+        },
+        ...mapState(useUsersStore, ['users', 'shownUsers']),
         ...mapState(useModalStore, ['isModalVisible', 'selectedAction', 'selectedUser']),
     },
     methods: {
@@ -98,7 +104,7 @@ export default {
                 console.log(e)
             }
             finally {
-                this.exit()
+                this.clear()
             }
         },
         async edit() {
@@ -110,7 +116,7 @@ export default {
                 console.log(e)
             }
             finally {
-                this.exit()
+                this.clear()
             }
         },
         async deleteUser() {
@@ -122,15 +128,20 @@ export default {
                 console.log(e)
             }
             finally {
-                this.exit()
+                this.clear()
             }
         },
+        async filter() {
+            await this.fetchUsers(this.usersGetParams)
+            this.exit()
+        },
+        ...mapActions(useUsersStore, ['fetchUsers']),
         ...mapActions(useModalStore, ['toggleModalVisibility', 'selectAction', 'selectUser']),
     },
     watch: {
         selectedUser: {
             handler(value) {
-                if (value.index) {
+                if (value.index != null) {
                     for (let field in this.fields) {
                         this.fields[field].value = this.users[value.index][field]
                     }

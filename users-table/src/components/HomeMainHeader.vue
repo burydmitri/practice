@@ -38,8 +38,6 @@ export default {
     methods: {
         ...mapActions(useModalStore, ['toggleModalVisibility', 'selectAction']),
         handleClick(action) {
-            console.log(action)
-
             this.selectAction(action)
 
             if (action == 'Добавить') this.toggleModalVisibility()
