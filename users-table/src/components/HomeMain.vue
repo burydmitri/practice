@@ -1,8 +1,8 @@
 <template>
     <Main>
         <ModalForm />
-        <HomeMainHeader :title="this.title" />
-        <HomeMainTable :users="this.users" :loading="this.loading" :shownUsers="this.shownUsers" />
+        <HomeMainHeader :title="title" :update="getUsers"/>
+        <HomeMainTable :users="users" :loading="loading" :shownUsers="shownUsers" />
     </Main>
 </template>
 

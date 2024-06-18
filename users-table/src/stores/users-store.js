@@ -1,15 +1,12 @@
 import { defineStore } from 'pinia'
 import { UsersDataService } from "../helpers/data-service";
 
-export const useUsersStore = defineStore('counter', {
+export const useUsersStore = defineStore('users', {
     state: () => {
         return {
             users: [],
             shownUsers: 'true',
         }
-    },
-    getters : {
-        amountOfUsers: (users) => users.length
     },
     actions: {
         showAllUsers() {
