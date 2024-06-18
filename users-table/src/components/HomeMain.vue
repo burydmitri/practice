@@ -1,6 +1,6 @@
 <template>
     <Main>
-        <ModalForm />
+        <ModalCard />
         <HomeMainHeader :title="title" :update="getUsers"/>
         <HomeMainTable :users="users" :loading="loading" :shownUsers="shownUsers" />
     </Main>
@@ -9,7 +9,7 @@
 
 <script>
 import Main from './Main.vue'
-import ModalForm from './ModalForm.vue'
+import ModalCard from './ModalCard.vue'
 import HomeMainTable from './HomeMainTable.vue'
 import HomeMainHeader from './HomeMainHeader.vue'
 
@@ -17,7 +17,7 @@ import { mapState, mapActions } from 'pinia'
 import { useUsersStore } from '../stores/users-store'
 
 export default {
-    components: { Main, HomeMainHeader, HomeMainTable, ModalForm },
+    components: { Main, HomeMainHeader, HomeMainTable, ModalCard },
     data() {
         return {
             loading: true,
